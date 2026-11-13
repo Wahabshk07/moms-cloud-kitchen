@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  moduleFormat = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String   @unique
+  email     String?  @unique
+  password  String?
+  role      String   @default("CUSTOMER") // ADMIN | CUSTOMER
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  image     String?
+  isActive  Boolean   @default(true)
+  products  Product[]
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  description String
+  image       String?
+  ingredients String      @default("[]") // JSON string array
+  price       Float
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  isAvailable Boolean     @default(true)
+  isFeatured  Boolean     @default(false)
+  isPopular   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id                  String      @id @default(cuid())
+  orderNumber         String      @unique
+  userId              String
+  user                User        @relation(fields: [userId], references: [id])
+  customerName        String
+  customerPhone       String
+  deliveryAddress     String
+  deliveryInstructions String?
+  subtotal            Float
+  deliveryFee         Float
+  total               Float
+  paymentMethod       String      @default("COD")
+  paymentStatus       String      @default("PENDING") // PENDING | COLLECTED | FAILED
+  orderStatus         String      @default("PENDING") // PENDING | CONFIRMED | PREPARING | READY_FOR_DELIVERY | DELIVERED | CANCELLED
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  items               OrderItem[]
+}
+
+model OrderItem {
+  id           String   @id @default(cuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String?
+  product      Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName  String
+  productImage String?
+  unitPrice    Float
+  quantity     Int
+  totalPrice   Float
+}
