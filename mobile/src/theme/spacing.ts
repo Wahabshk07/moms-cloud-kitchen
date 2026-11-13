@@ -13,5 +13,5 @@ export const spacing = {
 export const layout = {
   screenPadding: 20,
   maxContentWidth: 720,
-  tabBarHeight: 64,
+  tabBarHeight: 72,
 } as const;

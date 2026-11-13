@@ -92,7 +92,12 @@ export function Header({
 
   return (
     <View style={styles.glassWrap}>
-      <BlurView intensity={Platform.OS === 'ios' ? 40 : 28} tint="light" style={StyleSheet.absoluteFill} />
+      <BlurView
+        intensity={Platform.OS === 'ios' ? 40 : 28}
+        tint="light"
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       {content}
     </View>
   );

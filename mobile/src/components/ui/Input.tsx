@@ -1,5 +1,12 @@
 import { forwardRef, useState, type ReactNode } from 'react';
-import { StyleSheet, TextInput, View, type StyleProp, type TextInputProps, type ViewStyle } from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  type StyleProp,
+  type TextInputProps,
+  type ViewStyle,
+} from 'react-native';
 
 import { colors, fontFamily, radius, spacing } from '@/theme';
 import { Text } from './Text';
@@ -14,19 +21,33 @@ export interface InputProps extends TextInputProps {
 }
 
 export const Input = forwardRef(function Input(
-  { label, error, hint, left, right, containerStyle, style, multiline, onFocus, onBlur, ...rest }: InputProps,
+  {
+    label,
+    error,
+    hint,
+    left,
+    right,
+    containerStyle,
+    style,
+    multiline,
+    onFocus,
+    onBlur,
+    editable = true,
+    ...rest
+  }: InputProps,
   ref: React.Ref<TextInput>,
 ) {
   const [focused, setFocused] = useState(false);
 
   return (
-    <View style={[styles.wrapper, containerStyle]}>
+    <View style={[styles.wrapper, containerStyle]} collapsable={false}>
       {label ? (
         <Text variant="label" color="secondary" style={styles.label}>
           {label}
         </Text>
       ) : null}
       <View
+        collapsable={false}
         style={[
           styles.field,
           multiline && styles.fieldMultiline,
@@ -37,10 +58,15 @@ export const Input = forwardRef(function Input(
         {left}
         <TextInput
           ref={ref as never}
+          editable={editable}
           placeholderTextColor={colors.textTertiary}
           selectionColor={colors.blue}
+          underlineColorAndroid="transparent"
           multiline={multiline}
           textAlignVertical={multiline ? 'top' : 'center'}
+          blurOnSubmit={!multiline}
+          // Keep the keyboard up — avoid parent remounts stealing focus.
+          showSoftInputOnFocus
           onFocus={(e) => {
             setFocused(true);
             onFocus?.(e);
@@ -72,36 +98,38 @@ export const TextArea = forwardRef<TextInput, InputProps>(function TextArea(prop
 });
 
 const styles = StyleSheet.create({
-  wrapper: { gap: spacing.xs },
+  wrapper: { gap: spacing.xs, width: '100%' },
   label: { marginBottom: 2 },
   field: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
     minHeight: 52,
+    width: '100%',
     paddingHorizontal: spacing.lg,
-    backgroundColor: colors.glassStrong,
+    backgroundColor: colors.white,
     borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.glassBorderMuted,
+    borderWidth: 1.5,
+    borderColor: colors.borderStrong,
+    // Stable elevation — do NOT toggle elevation on focus (Android drops focus).
+    elevation: 0,
   },
   fieldMultiline: { alignItems: 'flex-start', paddingVertical: spacing.md },
   focused: {
     borderColor: colors.blue,
     backgroundColor: colors.white,
-    shadowColor: colors.deepBlue,
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
   },
   errored: { borderColor: colors.danger },
   input: {
     flex: 1,
+    minWidth: 0,
+    width: '100%',
     fontFamily: fontFamily.regular,
     fontSize: 15,
     color: colors.black,
     paddingVertical: 12,
+    paddingHorizontal: 0,
+    margin: 0,
   },
   inputMultiline: { minHeight: 96, paddingVertical: 0 },
   helper: { marginTop: 2 },

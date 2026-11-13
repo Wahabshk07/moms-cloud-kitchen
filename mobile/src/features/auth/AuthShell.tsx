@@ -19,7 +19,7 @@ export function AuthShell({ eyebrow, title, subtitle, children }: AuthShellProps
 
   return (
     <GradientBackground variant="auth" orbs style={styles.root}>
-      <Screen safeArea="stack" scroll keyboard ambient={false} contentStyle={styles.content}>
+      <Screen safeArea="stack" scroll keyboard ambient={false} transparent contentStyle={styles.content}>
         <Animated.View entering={reduced ? undefined : FadeInDown.duration(480).springify()}>
           <View style={styles.brandRow}>
             <View style={styles.mark} />
@@ -39,7 +39,7 @@ export function AuthShell({ eyebrow, title, subtitle, children }: AuthShellProps
             </Text>
           </View>
         </Animated.View>
-        <GlassCard intensity="strong" elevated style={styles.panel}>
+        <GlassCard intensity="strong" elevated blur={false} style={styles.panel}>
           {children}
         </GlassCard>
       </Screen>

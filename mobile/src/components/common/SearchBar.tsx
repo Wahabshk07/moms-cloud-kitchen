@@ -20,9 +20,11 @@ export function SearchBar({ value, onChangeText, placeholder = 'Search dishes', 
         placeholder={placeholder}
         placeholderTextColor={colors.textTertiary}
         selectionColor={colors.blue}
+        underlineColorAndroid="transparent"
         returnKeyType="search"
         onSubmitEditing={onSubmit}
         autoCorrect={false}
+        editable
         style={styles.input}
         accessibilityLabel={placeholder}
       />
@@ -40,12 +42,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    height: 48,
+    minHeight: 48,
     paddingHorizontal: spacing.lg,
     borderRadius: radius.pill,
-    backgroundColor: colors.glass,
-    borderWidth: 1,
-    borderColor: colors.glassBorder,
+    backgroundColor: colors.white,
+    borderWidth: 1.5,
+    borderColor: colors.borderStrong,
+    elevation: 0,
   },
-  input: { flex: 1, fontFamily: fontFamily.regular, fontSize: 15, color: colors.black, paddingVertical: 0 },
+  input: {
+    flex: 1,
+    minWidth: 0,
+    fontFamily: fontFamily.regular,
+    fontSize: 15,
+    color: colors.black,
+    paddingVertical: 10,
+    margin: 0,
+  },
 });

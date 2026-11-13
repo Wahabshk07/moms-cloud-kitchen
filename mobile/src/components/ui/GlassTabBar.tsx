@@ -12,7 +12,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, fontFamily, gradients, layout, motion, radius, shadows, spacing } from '@/theme';
 import { Text } from './Text';
 
-/** Minimal tab-bar props — avoids a hard import on @react-navigation/bottom-tabs. */
+/**
+ * Expo Router SDK 58 tab-bar contract (not classic React Navigation):
+ * `emitter` + `navigateToTab(route.key)` — there is no `navigation` prop.
+ */
 export interface GlassTabBarProps {
   state: {
     index: number;
@@ -23,15 +26,27 @@ export interface GlassTabBarProps {
     {
       options: {
         title?: string;
-        tabBarLabel?: string | ((props: { focused: boolean; color: string; position: string; children: string }) => ReactNode);
+        tabBarLabel?:
+          | string
+          | ((props: {
+              focused: boolean;
+              color: string;
+              position: string;
+              children: string;
+            }) => ReactNode);
         tabBarIcon?: (props: { focused: boolean; color: string; size: number }) => ReactNode;
       };
     }
   >;
-  navigation: {
-    emit: (event: { type: string; target?: string; canPreventDefault?: boolean }) => { defaultPrevented: boolean };
-    navigate: (name: string, params?: object) => void;
+  emitter: {
+    emit: (event: {
+      type: string;
+      target?: string;
+      canPreventDefault?: boolean;
+    }) => { defaultPrevented: boolean };
   };
+  navigateToTab: (routeKey: string) => void;
+  insets?: { top: number; right: number; bottom: number; left: number };
 }
 
 function TabItem({
@@ -78,12 +93,16 @@ function TabItem({
   );
 }
 
-/**
- * Frosted floating tab bar — shared by customer + admin navigators.
- */
-export function GlassTabBar({ state, descriptors, navigation }: GlassTabBarProps) {
-  const insets = useSafeAreaInsets();
-  const bottom = Math.max(insets.bottom, spacing.sm);
+/** Frosted floating tab bar — shared by customer + admin navigators. */
+export function GlassTabBar({
+  state,
+  descriptors,
+  emitter,
+  navigateToTab,
+  insets: navInsets,
+}: GlassTabBarProps) {
+  const safe = useSafeAreaInsets();
+  const bottom = Math.max(navInsets?.bottom ?? safe.bottom, spacing.sm);
 
   return (
     <View style={[styles.wrap, { paddingBottom: bottom }, shadows.md]} pointerEvents="box-none">
@@ -97,7 +116,12 @@ export function GlassTabBar({ state, descriptors, navigation }: GlassTabBarProps
         {Platform.OS === 'web' ? (
           <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.glassStrong }]} />
         ) : (
-          <BlurView intensity={Platform.OS === 'ios' ? 55 : 36} tint="light" style={StyleSheet.absoluteFill} />
+          <BlurView
+            intensity={Platform.OS === 'ios' ? 55 : 36}
+            tint="light"
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
         )}
         <View style={styles.row}>
           {state.routes.map((route, index) => {
@@ -117,17 +141,17 @@ export function GlassTabBar({ state, descriptors, navigation }: GlassTabBarProps
                 focused={focused}
                 icon={icon}
                 onPress={() => {
-                  const event = navigation.emit({
+                  const event = emitter.emit({
                     type: 'tabPress',
                     target: route.key,
                     canPreventDefault: true,
                   });
                   if (!focused && !event.defaultPrevented) {
-                    navigation.navigate(route.name, route.params);
+                    navigateToTab(route.key);
                   }
                 }}
                 onLongPress={() => {
-                  navigation.emit({ type: 'tabLongPress', target: route.key });
+                  emitter.emit({ type: 'tabLongPress', target: route.key });
                 }}
               />
             );
@@ -166,10 +190,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 2,
-    paddingVertical: spacing.xs,
+    paddingTop: spacing.xs,
+    paddingBottom: 2,
     paddingHorizontal: spacing.sm,
     borderRadius: radius.md,
     minWidth: 64,
+    minHeight: 56,
   },
   itemFocused: {
     backgroundColor: colors.blueTint,
@@ -177,6 +203,8 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: fontFamily.medium,
     fontSize: 11,
+    lineHeight: 14,
+    includeFontPadding: false,
   },
   labelFocused: {
     color: colors.deepBlue,

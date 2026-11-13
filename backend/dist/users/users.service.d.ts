@@ -6,8 +6,8 @@ export declare class UsersService {
     getProfile(userId: string): Promise<{
         name: string;
         phone: string;
-        address: string | null;
         email: string | null;
+        address: string | null;
         id: string;
         role: string;
         createdAt: Date;
@@ -16,8 +16,8 @@ export declare class UsersService {
     updateProfile(userId: string, dto: UpdateProfileDto): Promise<{
         name: string;
         phone: string;
-        address: string | null;
         email: string | null;
+        address: string | null;
         id: string;
         role: string;
         createdAt: Date;

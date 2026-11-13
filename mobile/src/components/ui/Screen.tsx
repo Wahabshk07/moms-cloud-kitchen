@@ -51,6 +51,8 @@ interface ScreenProps {
   ambient?: boolean;
   /** Floating decorative orbs (auth / hero moments only). */
   orbs?: boolean;
+  /** Let a parent GradientBackground show through (e.g. auth shell). */
+  transparent?: boolean;
   contentStyle?: StyleProp<ViewStyle>;
 }
 
@@ -68,20 +70,18 @@ export function Screen({
   muted = false,
   ambient = true,
   orbs = false,
+  transparent = false,
   contentStyle,
 }: ScreenProps) {
   const insets = useSafeAreaInsets();
   const resolvedEdges = edges ?? EDGE_PRESETS[safeArea];
   const padding = padded ? { paddingHorizontal: layout.screenPadding } : null;
 
-  // When a sticky footer is used on a stack screen, keep SafeArea top/sides
-  // and apply the bottom inset on the footer itself so CTAs clear the home bar.
   const footerOwnsBottom = Boolean(footer) && resolvedEdges.includes('bottom');
   const safeEdges = footerOwnsBottom
     ? (resolvedEdges.filter((e) => e !== 'bottom') as Edge[])
     : [...resolvedEdges];
 
-  // Floating glass tab bar needs clearance on tab screens.
   const tabClearance = safeArea === 'tabs' ? layout.tabBarHeight + spacing.xxl : 0;
 
   const body = scroll ? (
@@ -95,8 +95,10 @@ export function Screen({
         tabClearance && !footer ? { paddingBottom: spacing.xxxl + tabClearance } : null,
       ]}
       showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+      keyboardShouldPersistTaps="always"
+      // on-drag + Android adjustResize = keyboard opens then instantly closes
+      keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'none'}
+      nestedScrollEnabled
       refreshControl={
         onRefresh ? (
           <RefreshControl
@@ -135,25 +137,29 @@ export function Screen({
     </>
   );
 
+  // KeyboardAvoidingView on Android fights windowSoftInputMode and can bounce the keyboard.
+  const useKAV = keyboard && Platform.OS === 'ios';
+
   const frame = (
     <SafeAreaView
       edges={safeEdges}
       style={[
         styles.flex,
         {
-          backgroundColor: ambient
-            ? 'transparent'
-            : muted
-              ? colors.bgMuted
-              : colors.white,
+          backgroundColor:
+            ambient || transparent
+              ? 'transparent'
+              : muted
+                ? colors.bgMuted
+                : colors.white,
         },
       ]}
     >
-      {keyboard ? (
+      {useKAV ? (
         <KeyboardAvoidingView
           style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top : 0}
+          behavior="padding"
+          keyboardVerticalOffset={insets.top}
         >
           {inner}
         </KeyboardAvoidingView>

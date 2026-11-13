@@ -7,8 +7,8 @@ export declare class UsersController {
     me(user: AuthUser): Promise<{
         name: string;
         phone: string;
-        address: string | null;
         email: string | null;
+        address: string | null;
         id: string;
         role: string;
         createdAt: Date;
@@ -17,8 +17,8 @@ export declare class UsersController {
     update(user: AuthUser, dto: UpdateProfileDto): Promise<{
         name: string;
         phone: string;
-        address: string | null;
         email: string | null;
+        address: string | null;
         id: string;
         role: string;
         createdAt: Date;

@@ -55,7 +55,7 @@ export default function ProfileScreen() {
           Profile saved.
         </Text>
       ) : null}
-      <GlassCard intensity="strong" elevated style={styles.form}>
+      <GlassCard intensity="strong" elevated blur={false} style={styles.form}>
         <ControlledInput control={control} name="name" label="Name" autoCapitalize="words" />
         <ControlledInput control={control} name="phone" label="Phone" keyboardType="phone-pad" />
         <ControlledInput control={control} name="address" label="Saved address" multiline />

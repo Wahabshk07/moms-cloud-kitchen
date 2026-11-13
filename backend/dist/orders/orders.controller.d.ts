@@ -11,114 +11,114 @@ export declare class OrdersController {
     create(user: AuthUser, dto: CreateOrderDto): Promise<{
         items: {
             id: string;
+            productId: string | null;
+            quantity: number;
             productName: string;
             productImage: string | null;
             unitPrice: number;
-            quantity: number;
             totalPrice: number;
-            productId: string | null;
             orderId: string;
         }[];
     } & {
         id: string;
-        orderNumber: string;
+        createdAt: Date;
+        updatedAt: Date;
         customerName: string;
         customerPhone: string;
         deliveryAddress: string;
         deliveryInstructions: string | null;
+        orderStatus: string;
+        paymentStatus: string;
+        orderNumber: string;
         subtotal: number;
         deliveryFee: number;
         total: number;
         paymentMethod: string;
-        paymentStatus: string;
-        orderStatus: string;
-        createdAt: Date;
-        updatedAt: Date;
         userId: string;
     }>;
     mine(user: AuthUser): import("../generated/prisma/internal/prismaNamespace.js").PrismaPromise<({
         items: {
             id: string;
+            productId: string | null;
+            quantity: number;
             productName: string;
             productImage: string | null;
             unitPrice: number;
-            quantity: number;
             totalPrice: number;
-            productId: string | null;
             orderId: string;
         }[];
     } & {
         id: string;
-        orderNumber: string;
+        createdAt: Date;
+        updatedAt: Date;
         customerName: string;
         customerPhone: string;
         deliveryAddress: string;
         deliveryInstructions: string | null;
+        orderStatus: string;
+        paymentStatus: string;
+        orderNumber: string;
         subtotal: number;
         deliveryFee: number;
         total: number;
         paymentMethod: string;
-        paymentStatus: string;
-        orderStatus: string;
-        createdAt: Date;
-        updatedAt: Date;
         userId: string;
     })[]>;
     mineOne(user: AuthUser, id: string): Promise<{
         items: {
             id: string;
+            productId: string | null;
+            quantity: number;
             productName: string;
             productImage: string | null;
             unitPrice: number;
-            quantity: number;
             totalPrice: number;
-            productId: string | null;
             orderId: string;
         }[];
     } & {
         id: string;
-        orderNumber: string;
+        createdAt: Date;
+        updatedAt: Date;
         customerName: string;
         customerPhone: string;
         deliveryAddress: string;
         deliveryInstructions: string | null;
+        orderStatus: string;
+        paymentStatus: string;
+        orderNumber: string;
         subtotal: number;
         deliveryFee: number;
         total: number;
         paymentMethod: string;
-        paymentStatus: string;
-        orderStatus: string;
-        createdAt: Date;
-        updatedAt: Date;
         userId: string;
     }>;
     listAll(page?: string, limit?: string, status?: string): Promise<{
         items: ({
             items: {
                 id: string;
+                productId: string | null;
+                quantity: number;
                 productName: string;
                 productImage: string | null;
                 unitPrice: number;
-                quantity: number;
                 totalPrice: number;
-                productId: string | null;
                 orderId: string;
             }[];
         } & {
             id: string;
-            orderNumber: string;
+            createdAt: Date;
+            updatedAt: Date;
             customerName: string;
             customerPhone: string;
             deliveryAddress: string;
             deliveryInstructions: string | null;
+            orderStatus: string;
+            paymentStatus: string;
+            orderNumber: string;
             subtotal: number;
             deliveryFee: number;
             total: number;
             paymentMethod: string;
-            paymentStatus: string;
-            orderStatus: string;
-            createdAt: Date;
-            updatedAt: Date;
             userId: string;
         })[];
         total: number;
@@ -129,57 +129,57 @@ export declare class OrdersController {
     getAny(id: string): Promise<{
         items: {
             id: string;
+            productId: string | null;
+            quantity: number;
             productName: string;
             productImage: string | null;
             unitPrice: number;
-            quantity: number;
             totalPrice: number;
-            productId: string | null;
             orderId: string;
         }[];
     } & {
         id: string;
-        orderNumber: string;
+        createdAt: Date;
+        updatedAt: Date;
         customerName: string;
         customerPhone: string;
         deliveryAddress: string;
         deliveryInstructions: string | null;
+        orderStatus: string;
+        paymentStatus: string;
+        orderNumber: string;
         subtotal: number;
         deliveryFee: number;
         total: number;
         paymentMethod: string;
-        paymentStatus: string;
-        orderStatus: string;
-        createdAt: Date;
-        updatedAt: Date;
         userId: string;
     }>;
     updateStatus(id: string, dto: UpdateOrderStatusDto): Promise<{
         items: {
             id: string;
+            productId: string | null;
+            quantity: number;
             productName: string;
             productImage: string | null;
             unitPrice: number;
-            quantity: number;
             totalPrice: number;
-            productId: string | null;
             orderId: string;
         }[];
     } & {
         id: string;
-        orderNumber: string;
+        createdAt: Date;
+        updatedAt: Date;
         customerName: string;
         customerPhone: string;
         deliveryAddress: string;
         deliveryInstructions: string | null;
+        orderStatus: string;
+        paymentStatus: string;
+        orderNumber: string;
         subtotal: number;
         deliveryFee: number;
         total: number;
         paymentMethod: string;
-        paymentStatus: string;
-        orderStatus: string;
-        createdAt: Date;
-        updatedAt: Date;
         userId: string;
     }>;
     dashboard(): Promise<{
@@ -192,29 +192,29 @@ export declare class OrdersController {
         recentOrders: ({
             items: {
                 id: string;
+                productId: string | null;
+                quantity: number;
                 productName: string;
                 productImage: string | null;
                 unitPrice: number;
-                quantity: number;
                 totalPrice: number;
-                productId: string | null;
                 orderId: string;
             }[];
         } & {
             id: string;
-            orderNumber: string;
+            createdAt: Date;
+            updatedAt: Date;
             customerName: string;
             customerPhone: string;
             deliveryAddress: string;
             deliveryInstructions: string | null;
+            orderStatus: string;
+            paymentStatus: string;
+            orderNumber: string;
             subtotal: number;
             deliveryFee: number;
             total: number;
             paymentMethod: string;
-            paymentStatus: string;
-            orderStatus: string;
-            createdAt: Date;
-            updatedAt: Date;
             userId: string;
         })[];
         totalRevenue: number;

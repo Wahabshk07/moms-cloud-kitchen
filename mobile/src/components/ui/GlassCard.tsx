@@ -17,6 +17,11 @@ interface GlassCardProps {
   onPress?: () => void;
   /** Extra elevation for floating panels. */
   elevated?: boolean;
+  /**
+   * Frosted blur behind content. Off by default on Android so TextInputs
+   * stay fully tappable (Samsung / BlurView quirks).
+   */
+  blur?: boolean;
 }
 
 const FILL: Record<Intensity, string> = {
@@ -26,8 +31,8 @@ const FILL: Record<Intensity, string> = {
 };
 
 /**
- * Selective glass surface — blur when available, translucent fallback otherwise.
- * Use for interactive panels, floating chrome, and hero accents — not every list row.
+ * Glass surface with decorative layers *behind* children.
+ * Never stack absolute overlays on top of form content — that breaks typing on Android.
  */
 export function GlassCard({
   children,
@@ -36,12 +41,14 @@ export function GlassCard({
   padded = true,
   onPress,
   elevated = false,
+  blur = Platform.OS === 'ios',
 }: GlassCardProps) {
   const fill = FILL[intensity];
-  const blurIntensity = Platform.OS === 'ios' ? (intensity === 'strong' ? 48 : 36) : 24;
+  const blurIntensity = intensity === 'strong' ? 48 : 36;
 
   const body = (
     <View style={[styles.shell, elevated ? shadows.float : shadows.glass, style]}>
+      {/* Decorations first (under content) */}
       <LinearGradient
         colors={[...gradients.glassPanel]}
         start={{ x: 0, y: 0 }}
@@ -49,14 +56,18 @@ export function GlassCard({
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
-      {Platform.OS === 'web' ? (
-        <View style={[styles.fallback, { backgroundColor: fill }, padded && styles.padded]}>{children}</View>
-      ) : (
-        <BlurView intensity={blurIntensity} tint="light" style={styles.blur}>
-          <View style={[{ backgroundColor: fill }, padded && styles.padded, styles.inner]}>{children}</View>
-        </BlurView>
-      )}
-      <View style={styles.highlight} pointerEvents="none" />
+      {blur && Platform.OS !== 'web' ? (
+        <BlurView
+          intensity={blurIntensity}
+          tint="light"
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+      ) : null}
+      <View style={[styles.edge, { borderColor: colors.glassHighlight }]} pointerEvents="none" />
+
+      {/* Interactive content on top — no overlay above this */}
+      <View style={[{ backgroundColor: fill }, padded && styles.padded]}>{children}</View>
     </View>
   );
 
@@ -77,17 +88,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: StyleSheet.hairlineWidth * 2,
     borderColor: colors.glassBorder,
-    backgroundColor: colors.glassSoft,
+    backgroundColor: colors.white,
   },
-  blur: { overflow: 'hidden' },
-  fallback: { borderRadius: radius.lg },
-  inner: { borderRadius: radius.lg },
   padded: { padding: spacing.lg },
-  highlight: {
+  edge: {
     ...StyleSheet.absoluteFill,
     borderRadius: radius.lg,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.glassHighlight,
-    opacity: 0.5,
+    opacity: 0.4,
   },
 });

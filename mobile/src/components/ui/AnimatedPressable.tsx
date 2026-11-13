@@ -43,6 +43,8 @@ export function AnimatedPressable({
       accessibilityState={{ disabled: !!disabled }}
       disabled={disabled}
       onPress={onPress}
+      android_ripple={undefined}
+      style={style}
       onPressIn={() => {
         scale.value = withSpring(reduced ? 0.99 : scaleTo, motion.springs.snappy);
       }}
@@ -50,7 +52,7 @@ export function AnimatedPressable({
         scale.value = withSpring(1, motion.springs.soft);
       }}
     >
-      <Animated.View style={[style, anim]}>{children}</Animated.View>
+      <Animated.View style={anim}>{children}</Animated.View>
     </Pressable>
   );
 }

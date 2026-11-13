@@ -17,13 +17,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#FFFFFF",
+        "backgroundColor": "#F9F5EA",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
       "usesCleartextTraffic": true,
+      "softwareKeyboardLayoutMode": "pan",
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ],
@@ -39,9 +40,16 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/splash-full.png",
+          "imageWidth": 300,
           "resizeMode": "contain",
-          "backgroundColor": "#FFFFFF"
+          "backgroundColor": "#F9F5EA",
+          "android": {
+            "image": "./assets/images/brand-splash-crop.png",
+            "imageWidth": 288,
+            "resizeMode": "contain",
+            "backgroundColor": "#F9F5EA"
+          }
         }
       ],
       "expo-font",
